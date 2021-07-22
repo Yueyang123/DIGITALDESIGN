@@ -1,0 +1,6 @@
+-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I ..\HARDWARE\LED -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\STM32F10x_FWLib\inc -I ..\CORE -I ..\HARDWARE\KEY -I ..\HARDWARE\USART2 -I ..\HARDWARE\TFT -I ..\HARDWARE\ADC -I ..\HARDWARE\math -I ..\HARDWARE\DMA -I ..\HARDWARE\SERVO -I ..\HARDWARE\A4950T -I ..\HARDWARE\OLED -I ..\HARDWARE\Encoder -I ..\HARDWARE\PWM -I ..\HARDWARE\MPU6050\eMPL -I ..\HARDWARE\MPU6050 --C99
+-I F:\电设\小车控制\USER\RTE
+-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include
+-I C:\Keil_v5\ARM\CMSIS\Include
+-D__UVISION_VERSION="518" -DSTM32F10X_MD -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER
+-o ..\obj\stm32f10x_exti.o --omf_browse ..\obj\stm32f10x_exti.crf --depend ..\obj\stm32f10x_exti.d --feedback "..\OBJ\USART.fed" "..\STM32F10x_FWLib\src\stm32f10x_exti.c"
