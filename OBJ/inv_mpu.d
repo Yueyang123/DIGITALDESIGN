@@ -35,7 +35,6 @@
 ..\obj\inv_mpu.o: ..\STM32F10x_FWLib\inc\misc.h
 ..\obj\inv_mpu.o: ..\HARDWARE\MPU6050\eMPL\inv_mpu_dmp_motion_driver.h
 ..\obj\inv_mpu.o: ..\HARDWARE\MPU6050\mpu6050.h
-..\obj\inv_mpu.o: ..\HARDWARE\MPU6050\mpuiic.h
 ..\obj\inv_mpu.o: ..\SYSTEM\sys\sys.h
 ..\obj\inv_mpu.o: ..\SYSTEM\delay\delay.h
 ..\obj\inv_mpu.o: ..\SYSTEM\usart\usart.h

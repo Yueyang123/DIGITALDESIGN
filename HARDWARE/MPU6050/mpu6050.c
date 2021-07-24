@@ -2,6 +2,141 @@
 #include "sys.h"
 #include "delay.h"
 #include "usart.h"   
+#include "delay.h"
+#include "usart3.h"
+ 
+  //MPU IIC 延时函数
+void MPU_IIC_Delay(void)
+{
+	delay_us(2);
+}
+
+//初始化IIC
+void MPU_IIC_Init(void)
+{					     
+  GPIO_InitTypeDef  GPIO_InitStructure;
+	
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB|RCC_APB2Periph_GPIOA,ENABLE);//先使能外设IO PORTB时钟 
+		
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;	 // 端口配置
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //推挽输出
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 //IO口速度为50MHz
+  GPIO_Init(GPIOA, &GPIO_InitStructure);					 //根据设定参数初始化GPIO 
+  GPIO_SetBits(GPIOA,GPIO_Pin_2);						 //PB10,PB11 输出高	
+ 
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;	 // 端口配置
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //推挽输出
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 //IO口速度为50MHz
+  GPIO_Init(GPIOB, &GPIO_InitStructure);					 //根据设定参数初始化GPIO 
+  GPIO_SetBits(GPIOB,GPIO_Pin_0);						 //PB10,PB11 输出高	
+}
+//产生IIC起始信号
+void MPU_IIC_Start(void)
+{
+	MPU_SDA_OUT();     //sda线输出
+	MPU_IIC_SDA=1;	  	  
+	MPU_IIC_SCL=1;
+	MPU_IIC_Delay();
+ 	MPU_IIC_SDA=0;//START:when CLK is high,DATA change form high to low 
+	MPU_IIC_Delay();
+	MPU_IIC_SCL=0;//钳住I2C总线，准备发送或接收数据 
+}	  
+//产生IIC停止信号
+void MPU_IIC_Stop(void)
+{
+	MPU_SDA_OUT();//sda线输出
+	MPU_IIC_SCL=0;
+	MPU_IIC_SDA=0;//STOP:when CLK is high DATA change form low to high
+ 	MPU_IIC_Delay();
+	MPU_IIC_SCL=1; 
+	MPU_IIC_SDA=1;//发送I2C总线结束信号
+	MPU_IIC_Delay();							   	
+}
+//等待应答信号到来
+//返回值：1，接收应答失败
+//        0，接收应答成功
+u8 MPU_IIC_Wait_Ack(void)
+{
+	u8 ucErrTime=0;
+	MPU_SDA_IN();      //SDA设置为输入  
+	MPU_IIC_SDA=1;MPU_IIC_Delay();	   
+	MPU_IIC_SCL=1;MPU_IIC_Delay();	 
+	while(MPU_READ_SDA)
+	{
+		ucErrTime++;
+		if(ucErrTime>250)
+		{
+			MPU_IIC_Stop();
+			return 1;
+		}
+	}
+	MPU_IIC_SCL=0;//时钟输出0 	   
+	return 0;  
+} 
+//产生ACK应答
+void MPU_IIC_Ack(void)
+{
+	MPU_IIC_SCL=0;
+	MPU_SDA_OUT();
+	MPU_IIC_SDA=0;
+	MPU_IIC_Delay();
+	MPU_IIC_SCL=1;
+	MPU_IIC_Delay();
+	MPU_IIC_SCL=0;
+}
+//不产生ACK应答		    
+void MPU_IIC_NAck(void)
+{
+	MPU_IIC_SCL=0;
+	MPU_SDA_OUT();
+	MPU_IIC_SDA=1;
+	MPU_IIC_Delay();
+	MPU_IIC_SCL=1;
+	MPU_IIC_Delay();
+	MPU_IIC_SCL=0;
+}					 				     
+//IIC发送一个字节
+//返回从机有无应答
+//1，有应答
+//0，无应答			  
+void MPU_IIC_Send_Byte(u8 txd)
+{                        
+    u8 t;   
+	MPU_SDA_OUT(); 	    
+    MPU_IIC_SCL=0;//拉低时钟开始数据传输
+    for(t=0;t<8;t++)
+    {              
+        MPU_IIC_SDA=(txd&0x80)>>7;
+        txd<<=1; 	  
+		    MPU_IIC_SCL=1;
+		    MPU_IIC_Delay(); 
+		    MPU_IIC_SCL=0;	
+		    MPU_IIC_Delay();
+    }	 
+} 	    
+//读1个字节，ack=1时，发送ACK，ack=0，发送nACK   
+u8 MPU_IIC_Read_Byte(unsigned char ack)
+{
+	unsigned char i,receive=0;
+	MPU_SDA_IN();//SDA设置为输入
+    for(i=0;i<8;i++ )
+	{
+        MPU_IIC_SCL=0; 
+        MPU_IIC_Delay();
+		MPU_IIC_SCL=1;
+        receive<<=1;
+        if(MPU_READ_SDA)receive++;   
+		MPU_IIC_Delay(); 
+    }					 
+    if (!ack)
+        MPU_IIC_NAck();//发送nACK
+    else
+        MPU_IIC_Ack(); //发送ACK   
+    return receive;
+}
+
+
+
 
 //初始化MPU6050
 //返回值:0,成功
@@ -14,7 +149,7 @@ u8 MPU_Init(void)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);//使能AFIO时钟 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);//先使能外设IO PORTA时钟 
 	
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;	 // 端口配置
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;	 // 端口配置
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //推挽输出
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 //IO口速度为50MHz
   GPIO_Init(GPIOA, &GPIO_InitStructure);					 //根据设定参数初始化GPIOA
@@ -239,3 +374,78 @@ u8 MPU_Read_Byte(u8 reg)
 }
 
 
+void usart3_send_char(u8 c)  
+{  
+
+    USART3_TX_BUF[0]=c;
+    while(DMA_GetCurrDataCounter(DMA1_Channel2)!=0);    
+    UART_DMA_Enable(DMA1_Channel2,1); 
+}
+//传送数据给匿名四轴上位机软件(V2.6版本)
+//fun:功能字. 0XA0~0XAF
+//data:数据缓存区,最多28字节!!
+//len:data区有效数据个数
+void usart3_niming_report(u8 fun,u8*data,u8 len)
+{
+	u8 send_buf[32];
+	u8 i;
+	if(len>28)return;	//最多28字节数据 
+	send_buf[len+3]=0;	//校验数置零
+	send_buf[0]=0X88;	//帧头
+	send_buf[1]=fun;	//功能字
+	send_buf[2]=len;	//数据长度
+	for(i=0;i<len;i++)send_buf[3+i]=data[i];			//复制数据
+	for(i=0;i<len+3;i++)send_buf[len+3]+=send_buf[i];	//计算校验和	
+	for(i=0;i<len+4;i++)usart3_send_char(send_buf[i]);	//发送数据到串口1 
+}
+//发送加速度传感器数据和陀螺仪数据
+//aacx,aacy,aacz:x,y,z三个方向上面的加速度值
+//gyrox,gyroy,gyroz:x,y,z三个方向上面的陀螺仪值
+void mpu6050_send_data(short aacx,short aacy,short aacz,short gyrox,short gyroy,short gyroz)
+{
+	u8 tbuf[12]; 
+	tbuf[0]=(aacx>>8)&0XFF;
+	tbuf[1]=aacx&0XFF;
+	tbuf[2]=(aacy>>8)&0XFF;
+	tbuf[3]=aacy&0XFF;
+	tbuf[4]=(aacz>>8)&0XFF;
+	tbuf[5]=aacz&0XFF; 
+	tbuf[6]=(gyrox>>8)&0XFF;
+	tbuf[7]=gyrox&0XFF;
+	tbuf[8]=(gyroy>>8)&0XFF;
+	tbuf[9]=gyroy&0XFF;
+	tbuf[10]=(gyroz>>8)&0XFF;
+	tbuf[11]=gyroz&0XFF;
+	usart3_niming_report(0XA1,tbuf,12);//自定义帧,0XA1
+}	
+//通过串口1上报结算后的姿态数据给电脑
+//aacx,aacy,aacz:x,y,z三个方向上面的加速度值
+//gyrox,gyroy,gyroz:x,y,z三个方向上面的陀螺仪值
+//roll:横滚角.单位0.01度。 -18000 -> 18000 对应 -180.00  ->  180.00度
+//pitch:俯仰角.单位 0.01度。-9000 - 9000 对应 -90.00 -> 90.00 度
+//yaw:航向角.单位为0.1度 0 -> 3600  对应 0 -> 360.0度
+void usart3_report_imu(short aacx,short aacy,short aacz,short gyrox,short gyroy,short gyroz,short roll,short pitch,short yaw)
+{
+	u8 tbuf[28]; 
+	u8 i;
+	for(i=0;i<28;i++)tbuf[i]=0;//清0
+	tbuf[0]=(aacx>>8)&0XFF;
+	tbuf[1]=aacx&0XFF;
+	tbuf[2]=(aacy>>8)&0XFF;
+	tbuf[3]=aacy&0XFF;
+	tbuf[4]=(aacz>>8)&0XFF;
+	tbuf[5]=aacz&0XFF; 
+	tbuf[6]=(gyrox>>8)&0XFF;
+	tbuf[7]=gyrox&0XFF;
+	tbuf[8]=(gyroy>>8)&0XFF;
+	tbuf[9]=gyroy&0XFF;
+	tbuf[10]=(gyroz>>8)&0XFF;
+	tbuf[11]=gyroz&0XFF;	
+	tbuf[18]=(roll>>8)&0XFF;
+	tbuf[19]=roll&0XFF;
+	tbuf[20]=(pitch>>8)&0XFF;
+	tbuf[21]=pitch&0XFF;
+	tbuf[22]=(yaw>>8)&0XFF;
+	tbuf[23]=yaw&0XFF;
+	usart3_niming_report(0XAF,tbuf,28);//飞控显示帧,0XAF
+} 

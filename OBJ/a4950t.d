@@ -30,4 +30,5 @@
 ..\obj\a4950t.o: ..\STM32F10x_FWLib\inc\stm32f10x_usart.h
 ..\obj\a4950t.o: ..\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 ..\obj\a4950t.o: ..\STM32F10x_FWLib\inc\misc.h
+..\obj\a4950t.o: ..\SYSTEM\delay\delay.h
 ..\obj\a4950t.o: ..\HARDWARE\PWM\PWM.h

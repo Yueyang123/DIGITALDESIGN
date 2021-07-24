@@ -1,9 +1,34 @@
 #ifndef __MPU6050_H
 #define __MPU6050_H
-#include "mpuiic.h"   												  	  
+
+#include "sys.h"
+
+	   		   
+//IO方向设置
+#define MPU_SDA_IN()  {GPIOB->CRL&=0XFFFFFFF0;GPIOB->CRL|=8<<0;}
+#define MPU_SDA_OUT() {GPIOB->CRL&=0XFFFFFFF0;GPIOB->CRL|=3<<0;}
+
+//IO操作函数	 
+#define MPU_IIC_SCL    PAout(2) 		//SCL
+#define MPU_IIC_SDA    PBout(0) 		//SDA	 
+#define MPU_READ_SDA   PBin(0) 		//输入SDA 
+
+//IIC所有操作函数
+void MPU_IIC_Delay(void);				//MPU IIC延时函数
+void MPU_IIC_Init(void);                //初始化IIC的IO口				 
+void MPU_IIC_Start(void);				//发送IIC开始信号
+void MPU_IIC_Stop(void);	  			//发送IIC停止信号
+void MPU_IIC_Send_Byte(u8 txd);			//IIC发送一个字节
+u8 MPU_IIC_Read_Byte(unsigned char ack);//IIC读取一个字节
+u8 MPU_IIC_Wait_Ack(void); 				//IIC等待ACK信号
+void MPU_IIC_Ack(void);					//IIC发送ACK信号
+void MPU_IIC_NAck(void);				//IIC不发送ACK信号
+
+void IMPU_IC_Write_One_Byte(u8 daddr,u8 addr,u8 data);
+u8 MPU_IIC_Read_One_Byte(u8 daddr,u8 addr);	 
 
 //MPU6050 AD0控制脚
-#define MPU_AD0_CTRL			PAout(11)	//控制AD0电平,从而控制MPU地址
+#define MPU_AD0_CTRL			PAout(3)	//控制AD0电平,从而控制MPU地址
 
 //#define MPU_ACCEL_OFFS_REG		0X06	//accel_offs寄存器,可读取版本号,寄存器手册未提到
 //#define MPU_PROD_ID_REG			0X0C	//prod id寄存器,在寄存器手册未提到

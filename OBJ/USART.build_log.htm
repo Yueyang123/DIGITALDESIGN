@@ -22,37 +22,43 @@ Dialog DLL:      TCM.DLL V1.14.8.0
  
 <h2>Project:</h2>
 F:\电设\小车控制\USER\math.uvprojx
-Project File Date:  07/22/2021
+Project File Date:  07/23/2021
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 1 (build 61)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'USART'
 compiling main.c...
-..\HARDWARE\SERVO\SERVO.h(4): warning:  #1295-D: Deprecated declaration SERVO_Init - give arg types
+..\HARDWARE\SERVO\SERVO.h(8): warning:  #1295-D: Deprecated declaration SERVO_Init - give arg types
   void SERVO_Init();
-..\HARDWARE\SERVO\SERVO.h(6): warning:  #1295-D: Deprecated declaration SERVO_Set_ZERO - give arg types
+..\HARDWARE\SERVO\SERVO.h(10): warning:  #1295-D: Deprecated declaration SERVO_Set_ZERO - give arg types
   void SERVO_Set_ZERO();
-..\HARDWARE\SERVO\SERVO.h(7): warning:  #1-D: last line of file ends without a newline
+..\HARDWARE\SERVO\SERVO.h(11): warning:  #1-D: last line of file ends without a newline
   #endif
 ..\HARDWARE\A4950T\A4950T.h(10): warning:  #1295-D: Deprecated declaration A4950T_Init - give arg types
   void A4950T_Init();
+..\HARDWARE\A4950T\A4950T.h(28): warning:  #1295-D: Deprecated declaration motor_forth - give arg types
+  void motor_forth();//前??
 ..\HARDWARE\A4950T\A4950T.h(29): warning:  #1-D: last line of file ends without a newline
   #endif
 ..\HARDWARE\Encoder\Encoder.h(9): warning:  #1295-D: Deprecated declaration Encoder_Init - give arg types
   void Encoder_Init();
 ..\HARDWARE\Encoder\Encoder.h(10): warning:  #1-D: last line of file ends without a newline
   #endif
-main.c(95): warning:  #177-D: variable "t" was declared but never referenced
-  		u32 t,len;
-main.c(95): warning:  #177-D: variable "len" was declared but never referenced
-  		u32 t,len;
-main.c(148): warning:  #1-D: last line of file ends without a newline
+..\HARDWARE\Control\Control.h(44): warning:  #1295-D: Deprecated declaration Control_Run - give arg types
+  void Control_Run();
+..\HARDWARE\Control\Control.h(45): warning:  #1295-D: Deprecated declaration Controler_Init - give arg types
+  void Controler_Init();
+..\HARDWARE\Control\Control.h(50): warning:  #1-D: last line of file ends without a newline
+  #endif
+main.c(59): warning:  #177-D: variable "len" was declared but never referenced
+  		u32 key,len;
+main.c(172): warning:  #1-D: last line of file ends without a newline
   }
-main.c: 10 warnings, 0 errors
+main.c: 13 warnings, 0 errors
 linking...
-Program Size: Code=35274 RO-data=6950 RW-data=232 ZI-data=7912  
+Program Size: Code=31678 RO-data=3846 RW-data=256 ZI-data=7976  
 FromELF: creating hex file...
-"..\OBJ\USART.axf" - 0 Error(s), 10 Warning(s).
+"..\OBJ\USART.axf" - 0 Error(s), 13 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   F:\电设\小车控制\USER\RTE

@@ -1,6 +1,5 @@
 ..\obj\mpu6050.o: ..\HARDWARE\MPU6050\mpu6050.c
 ..\obj\mpu6050.o: ..\HARDWARE\MPU6050\mpu6050.h
-..\obj\mpu6050.o: ..\HARDWARE\MPU6050\mpuiic.h
 ..\obj\mpu6050.o: ..\SYSTEM\sys\sys.h
 ..\obj\mpu6050.o: ..\USER\stm32f10x.h
 ..\obj\mpu6050.o: ..\CORE\core_cm3.h
@@ -34,3 +33,4 @@
 ..\obj\mpu6050.o: ..\SYSTEM\delay\delay.h
 ..\obj\mpu6050.o: ..\SYSTEM\usart\usart.h
 ..\obj\mpu6050.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\mpu6050.o: ..\HARDWARE\USART2\usart3.h

@@ -25,5 +25,5 @@ void set_pwmb2(u16 pwm);
 void set_pwmb1(u16 pwm);
 void set_pwma2(u16 pwm);
 void set_pwma1(u16 pwm);
-
+void motor_forth();//Ç°ÐÐ
 #endif

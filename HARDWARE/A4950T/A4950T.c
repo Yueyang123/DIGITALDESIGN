@@ -1,5 +1,5 @@
 #include "A4950T.h"
-
+#include "delay.h"
 
 
 //快衰减：电流快速衰减，此时为滑动模式
@@ -152,6 +152,8 @@ void slow_stop(void)
     PWMB1=MAX_PWM;
     PWMB2=MAX_PWM;
 }
+
+
 //快衰减，正转，占空比越大，速度越大
 void fast_forward_a(u16 ain)
 {
@@ -182,3 +184,5 @@ void fast_stop(void)
     PWMB1=0;
     PWMB2=0;
 }
+
+

@@ -40,7 +40,8 @@
 ..\obj\main.o: ..\HARDWARE\SERVO\SERVO.h
 ..\obj\main.o: ..\HARDWARE\A4950T\A4950T.h
 ..\obj\main.o: ..\HARDWARE\Encoder\Encoder.h
+..\obj\main.o: ..\HARDWARE\Control\Control.h
 ..\obj\main.o: ..\HARDWARE\MPU6050\mpu6050.h
-..\obj\main.o: ..\HARDWARE\MPU6050\mpuiic.h
+..\obj\main.o: ..\HARDWARE\PS2\PS2.h
 ..\obj\main.o: ..\HARDWARE\MPU6050\eMPL\inv_mpu.h
 ..\obj\main.o: ..\HARDWARE\MPU6050\eMPL\inv_mpu_dmp_motion_driver.h
